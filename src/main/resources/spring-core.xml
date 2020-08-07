@@ -52,6 +52,9 @@
             <tx:method name="put*" propagation="REQUIRED" rollback-for="java.lang.Exception"/>
         </tx:attributes>
     </tx:advice>
+
+
+    
     <!--切面配置-->
    <aop:config >
        <aop:pointcut id="myPointCut" expression="execution(* com.shangguan.spring.service.impl.*.*(..))"/>

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd http://www.springframework.org/schema/aop https://www.springframework.org/schema/aop/spring-aop.xsd">
+  <!--进行包扫描-->
+    <context:component-scan base-package="com.shangguan.spring"></context:component-scan>
+    <!--外部的数据源信息-->
+    <context:property-placeholder location="classpath*:db.properties"></context:property-placeholder>
+<!--  数据源配置  -->
+    <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName"  value="${jdbc.Driver}"/>
+        <property name="url"  value="${jdbc.Url}"/>
+        <property name="username" value="${jdbc.UserName}"/>
+        <property name="password" value="${jdbc.Password}"/>
+    </bean>
+    <!--SqlSessionFactory-->
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+
+        <!--数据源加载-->
+        <property name="dataSource" ref="dataSource"></property>
+        <!--mybatis的核心配置文件-->
+        <property name="configLocation" value="mybatis-config.xml"></property>
+        <!--接口的映射文件 通配符配置-->
+         <property name="mapperLocations" value="classpath*:mapper/*Mapper.xml"></property>
+         <!--配置别名-->
+        <property name="typeAliasesPackage" value="com.shangguan.spring.beans"/>
+    </bean>
+    <!--获取mybatis的mapper代理配置-->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer" >
+        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"></property>
+        <!--基于接口的扫描配置-->
+        <property name="basePackage" value="com.shangguan.spring.mapper"></property>
+    </bean>
+
+    <!--声明式事务管理-->
+    <bean id="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource"  ref="dataSource"></property>
+    </bean>
+     <!--事务的通知-->
+    <tx:advice transaction-manager="txManager" id="txAdvice">
+        <tx:attributes>
+            <tx:method name="query*" propagation="NOT_SUPPORTED" read-only="true"/>
+            <tx:method name="get*" propagation="NOT_SUPPORTED" read-only="true"/>
+            <tx:method name="select*" propagation="NOT_SUPPORTED" read-only="true"/>
+            <tx:method name="find*" propagation="NOT_SUPPORTED" read-only="true"/>
+            <tx:method name="add*" propagation="REQUIRED" rollback-for="java.lang.Exception"/>
+            <tx:method name="delete*" propagation="REQUIRED" rollback-for="java.lang.Exception"/>
+            <tx:method name="update*" propagation="REQUIRED" rollback-for="java.lang.Exception"/>
+            <tx:method name="put*" propagation="REQUIRED" rollback-for="java.lang.Exception"/>
+        </tx:attributes>
+    </tx:advice>
+    <!--切面配置-->
+   <aop:config >
+       <aop:pointcut id="myPointCut" expression="execution(* com.shangguan.spring.service.impl.*.*(..))"/>
+       <aop:advisor advice-ref="txAdvice" pointcut-ref="myPointCut"/>
+   </aop:config>
+
+</beans>

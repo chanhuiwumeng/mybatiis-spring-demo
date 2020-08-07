@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shangguan.spring.mapper.SchoolMapper">
+  <resultMap id="BaseResultMap" type="com.shangguan.spring.beans.School">
+    <!--@mbg.generated-->
+    <!--@Table school-->
+    <id column="sch_id" jdbcType="INTEGER" property="schId" />
+    <result column="sch_name" jdbcType="VARCHAR" property="schName" />
+    <result column="sch_address" jdbcType="VARCHAR" property="schAddress" />
+    <result column="sch_description" jdbcType="VARCHAR" property="schDescription" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    sch_id, sch_name, sch_address, sch_description
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    <!--@mbg.generated-->
+    select 
+    <include refid="Base_Column_List" />
+    from school
+    where sch_id = #{schId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    <!--@mbg.generated-->
+    delete from school
+    where sch_id = #{schId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" keyColumn="sch_id" keyProperty="schId" parameterType="com.shangguan.spring.beans.School" useGeneratedKeys="true">
+    <!--@mbg.generated-->
+    insert into school (sch_name, sch_address, sch_description
+      )
+    values (#{schName,jdbcType=VARCHAR}, #{schAddress,jdbcType=VARCHAR}, #{schDescription,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" keyColumn="sch_id" keyProperty="schId" parameterType="School" useGeneratedKeys="true">
+    <!--@mbg.generated-->
+    insert into school
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="schName != null">
+        sch_name,
+      </if>
+      <if test="schAddress != null">
+        sch_address,
+      </if>
+      <if test="schDescription != null">
+        sch_description,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="schName != null">
+        #{schName,jdbcType=VARCHAR},
+      </if>
+      <if test="schAddress != null">
+        #{schAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="schDescription != null">
+        #{schDescription,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="School">
+    <!--@mbg.generated-->
+    update school
+    <set>
+      <if test="schName != null">
+        sch_name = #{schName,jdbcType=VARCHAR},
+      </if>
+      <if test="schAddress != null">
+        sch_address = #{schAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="schDescription != null">
+        sch_description = #{schDescription,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where sch_id = #{schId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.shangguan.spring.beans.School">
+    <!--@mbg.generated-->
+    update school
+    set sch_name = #{schName,jdbcType=VARCHAR},
+      sch_address = #{schAddress,jdbcType=VARCHAR},
+      sch_description = #{schDescription,jdbcType=VARCHAR}
+    where sch_id = #{schId,jdbcType=INTEGER}
+  </update>
+  <select id="queryAll" resultMap="BaseResultMap">
+   select
+   <include refid="Base_Column_List"></include>
+    from
+    school
+  </select>
+</mapper>
